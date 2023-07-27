@@ -1,13 +1,17 @@
 package com.LoFor1t.currencyExchangeSpring.DataModels;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "exchangeRates", uniqueConstraints = {@UniqueConstraint(columnNames = {"baseCurrencyId", "targetCurrencyId"})})
+@Table(name = "exchangerates", uniqueConstraints = {@UniqueConstraint(columnNames = {"basecurrencyid", "targetcurrencyid"})})
 @NoArgsConstructor
+@Getter
+@Setter
 public class ExchangeRate {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -15,19 +19,16 @@ public class ExchangeRate {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "baseCurrencyId", nullable = false)
+    @JoinColumn(name = "basecurrencyid", nullable = false)
     private Currency baseCurrency;
 
     @ManyToOne
-    @JoinColumn(name = "targetCurrencyId", nullable = false)
+    @JoinColumn(name = "targetcurrencyid", nullable = false)
     private Currency targetCurrency;
 
     @Column(name = "rate")
     private BigDecimal rate;
-
-    public ExchangeRate(Currency baseCurrency, Currency targetCurrency, BigDecimal rate) {
-        this.baseCurrency = baseCurrency;
-        this.targetCurrency = targetCurrency;
-        this.rate = rate;
-    }
 }
+
+
+

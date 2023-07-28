@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CurrencyCrudRepository extends CrudRepository<Currency, Integer> {
     Optional<Currency> findByCode(String code);
+    Boolean existsByCode(String code);
 }

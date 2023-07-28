@@ -21,4 +21,10 @@ public class Currency {
 
     @Column(name = "sign")
     private String sign;
+
+    public Currency(String code, String fullName, String sign) {
+        this.code = code;
+        this.fullName = fullName;
+        this.sign = sign;
+    }
 }

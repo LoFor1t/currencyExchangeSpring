@@ -7,5 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface ExchangeRateCrudRepository extends CrudRepository<ExchangeRate, Integer> {
-    Optional<ExchangeRate> findByBaseCurrencyAndTargetCurrency(Optional<Currency> baseCurrency, Optional<Currency> targetCurrency);
+    Optional<ExchangeRate> findByBaseCurrencyAndTargetCurrency(Currency baseCurrency, Currency targetCurrency);
+    Boolean existsByBaseCurrencyAndTargetCurrency(Currency baseCurrency, Currency targetCurrency);
 }

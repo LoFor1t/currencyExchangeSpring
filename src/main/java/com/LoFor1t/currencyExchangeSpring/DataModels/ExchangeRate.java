@@ -28,6 +28,12 @@ public class ExchangeRate {
 
     @Column(name = "rate")
     private BigDecimal rate;
+
+    public ExchangeRate(Currency baseCurrency, Currency targetCurrency, BigDecimal rate) {
+        this.baseCurrency = baseCurrency;
+        this.targetCurrency = targetCurrency;
+        this.rate = rate;
+    }
 }
 
 

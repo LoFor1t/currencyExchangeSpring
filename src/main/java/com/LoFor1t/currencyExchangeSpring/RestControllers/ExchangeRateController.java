@@ -37,7 +37,7 @@ public class ExchangeRateController {
             return new ResponseEntity<>("Одной из валют нет в базе данных.", HttpStatus.NOT_FOUND);
         }
 
-        Optional<ExchangeRate> exchangeRate = exchangeRateCrudRepository.findByBaseCurrencyAndTargetCurrency(baseCurrency, targetCurrency);
+        Optional<ExchangeRate> exchangeRate = exchangeRateCrudRepository.findByBaseCurrencyAndTargetCurrency(baseCurrency.get(), targetCurrency.get());
 
         if (exchangeRate.isEmpty()) {
             return new ResponseEntity<>("Обменный курс для пары не найден.", HttpStatus.NOT_FOUND);

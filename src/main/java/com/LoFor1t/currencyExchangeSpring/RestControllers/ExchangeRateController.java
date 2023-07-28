@@ -6,15 +6,13 @@ import com.LoFor1t.currencyExchangeSpring.DataRepositories.CurrencyCrudRepositor
 import com.LoFor1t.currencyExchangeSpring.DataRepositories.ExchangeRateCrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/exchangeRate")
+@RequestMapping("/exchangeRate/{codes}")
 public class ExchangeRateController {
     private final ExchangeRateCrudRepository exchangeRateCrudRepository;
     private final CurrencyCrudRepository currencyCrudRepository;
@@ -24,7 +22,7 @@ public class ExchangeRateController {
         this.currencyCrudRepository = currencyCrudRepository;
     }
 
-    @GetMapping("/{codes}")
+    @GetMapping
     public ResponseEntity<Object> getExchangeRateByCurrencyCodes(@PathVariable String codes) {
         if (codes.length() != 6) {
             return new ResponseEntity<>("Код валютной пары отсутствует в адресе", HttpStatus.BAD_REQUEST);
@@ -44,5 +42,33 @@ public class ExchangeRateController {
         }
 
         return new ResponseEntity<>(exchangeRate, HttpStatus.OK);
+    }
+
+    @PatchMapping
+    public ResponseEntity<Object> updateExchangeRateByCodes(@PathVariable String codes, @RequestParam("rate") String rate) {
+        if (codes.length() != 6) {
+            return new ResponseEntity<>("Код валютной пары отсутствует в адресе", HttpStatus.BAD_REQUEST);
+        }
+
+        if (rate.isEmpty()) {
+            return new ResponseEntity<>("Rate отсутствует в параметрах", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Currency> baseCurrency = currencyCrudRepository.findByCode(codes.substring(0, 3));
+        Optional<Currency> targetCurrency = currencyCrudRepository.findByCode(codes.substring(3, 6));
+
+        if (baseCurrency.isEmpty() || targetCurrency.isEmpty()) {
+            return new ResponseEntity<>("Одной из валют нет в базе данных.", HttpStatus.NOT_FOUND);
+        }
+
+        Optional<ExchangeRate> exchangeRate = exchangeRateCrudRepository.findByBaseCurrencyAndTargetCurrency(baseCurrency.get(), targetCurrency.get());
+
+        if (exchangeRate.isEmpty()) {
+            return new ResponseEntity<>("Данная валютная пара не существует в базе данных", HttpStatus.NOT_FOUND);
+        }
+
+        exchangeRate.get().setRate(new BigDecimal(rate));
+
+        return new ResponseEntity<>(exchangeRateCrudRepository.save(exchangeRate.get()), HttpStatus.OK);
     }
 }
